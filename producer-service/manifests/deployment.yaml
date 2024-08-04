@@ -1,0 +1,37 @@
+# https://kubernetes.io/docs/concepts/workloads/controllers/deployment/
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: producer-service
+  namespace: default
+  labels:
+    app:  producer-service
+spec:
+  selector:
+    matchLabels:
+      app: producer-service
+  replicas: 1
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app:  producer-service
+    spec:
+      containers:
+      - name:  producer-service
+        image:  suhail12/producer-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort:  8080
+        env:
+          - name: MONGO_USERNAME
+            value: c3VoYWlsMTI=
+          - name: MONGO_PASSWORD
+            value: c3VoYWlsMzQ=
+      restartPolicy: Always
+---
+
