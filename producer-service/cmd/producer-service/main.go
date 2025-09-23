@@ -2,15 +2,26 @@ package main
 
 import (
 	"log"
-	"os"
+	"net/http"
 
-	"github.com/suhail34/pdf-compressor/producer-service/internal/server"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/handler"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/server"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/service"
 )
 
 func main() {
-	srv := server.NewServer()
-	if err := srv.Run(); err != nil {
-		log.Print("Error starting the server : ", err)
-		os.Exit(1)
+	db, bucket, err := repo.MongoConnect()
+	if err != nil {
+		log.Fatal("Database Connection Failed")
 	}
+	repo := repo.New(db, bucket)
+	service := service.New(&repo)
+	handler := handler.New(service)
+	mux := server.New(handler)
+	newServer := http.Server{
+		Addr: ":8080",
+		Handler: mux,
+	}
+	log.Fatal(newServer.ListenAndServe())
 }
