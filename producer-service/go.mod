@@ -2,7 +2,10 @@ module github.com/kratos-14/pdf-compressor/producer-service
 
 go 1.23.10
 
-require go.mongodb.org/mongo-driver v1.17.4
+require (
+	github.com/confluentinc/confluent-kafka-go v1.9.2
+	go.mongodb.org/mongo-driver v1.17.4
+)
 
 require (
 	github.com/golang/snappy v0.0.4 // indirect

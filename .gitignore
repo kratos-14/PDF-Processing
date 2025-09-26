@@ -5,4 +5,4 @@ env/
 docs/
 faiss/
 
-old-producer-service
+old-*

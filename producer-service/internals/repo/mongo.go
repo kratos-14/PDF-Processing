@@ -20,7 +20,7 @@ var (
 	bucket *gridfs.Bucket
 )
 
-func MongoConnect() (*mongo.Database, *gridfs.Bucket, error) {
+func MongoConnect() (*mongo.Database, *gridfs.Bucket) {
 	if mongoDB == nil {
 		mongoOnce.Do(
 			func() {
@@ -51,5 +51,5 @@ func MongoConnect() (*mongo.Database, *gridfs.Bucket, error) {
 				log.Print("MongoDB Connected")
 			})
 	}
-	return mongoDB, bucket, nil
+	return mongoDB, bucket
 }

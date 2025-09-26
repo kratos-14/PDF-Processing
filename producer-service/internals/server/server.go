@@ -10,5 +10,6 @@ func New(h *handler.Handler) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/files", h.UploadFile)
 	mux.HandleFunc("/api/file", h.DownloadFile)
+	mux.HandleFunc("/api/status/files", h.GetFileStatus)
 	return mux
 }

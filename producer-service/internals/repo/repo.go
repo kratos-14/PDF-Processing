@@ -3,12 +3,13 @@ package repo
 import (
 	"mime/multipart"
 
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/gridfs"
 )
 
 type Repo interface {
-	UploadFile([]*multipart.FileHeader) error
+	UploadFile([]*multipart.FileHeader) (map[primitive.ObjectID]string, error)
 }
 
 type repo struct {
