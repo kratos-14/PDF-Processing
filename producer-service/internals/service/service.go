@@ -9,7 +9,7 @@ import (
 
 type Service interface {
 	UploadFile(*multipart.Form) error
-	DownloadFile()
+	DownloadFile() error
 }
 
 type service struct {

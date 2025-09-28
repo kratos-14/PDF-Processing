@@ -10,6 +10,7 @@ import (
 
 type Repo interface {
 	UploadFile([]*multipart.FileHeader) (map[primitive.ObjectID]string, error)
+	DownloadFile(fileId string)
 }
 
 type repo struct {
