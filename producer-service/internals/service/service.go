@@ -5,11 +5,12 @@ import (
 
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo"
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo/broker"
+	"go.mongodb.org/mongo-driver/mongo/gridfs"
 )
 
 type Service interface {
 	UploadFile(*multipart.Form) error
-	DownloadFile() error
+	DownloadFile(string) (string, *gridfs.DownloadStream, error)
 }
 
 type service struct {

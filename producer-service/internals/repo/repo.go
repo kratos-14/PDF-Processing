@@ -10,7 +10,7 @@ import (
 
 type Repo interface {
 	UploadFile([]*multipart.FileHeader) (map[primitive.ObjectID]string, error)
-	DownloadFile(fileId string)
+	DownloadFile(primitive.ObjectID) (string, *gridfs.DownloadStream, error)
 }
 
 type repo struct {
