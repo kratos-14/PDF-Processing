@@ -1,0 +1,10 @@
+replicaCount: 1
+namespace: default
+container:
+  image: rabbitmq
+  tag: 3-management
+persistence:
+  enabled: true
+  storageClass: ""
+  accessMode: ReadWriteOnce
+  size: 300Mi
