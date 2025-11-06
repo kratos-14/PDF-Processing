@@ -1,18 +1,29 @@
-package broker
+package kafka
 
 import (
 	"log"
 	"sync"
 
 	"github.com/confluentinc/confluent-kafka-go/kafka"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo/broker"
 )
+
+type kafkaBroker struct {
+	producer *kafka.Producer
+}
+
+func New(producer *kafka.Producer) broker.Broker {
+	return &kafkaBroker{
+		producer: producer,
+	}
+}
 
 var (
 	kafkaProducer *kafka.Producer
 	kafkaOnce     sync.Once
 )
 
-func KafkaConnect() (*kafka.Producer) {
+func KafkaConnect() *kafka.Producer {
 	if kafkaProducer == nil {
 		kafkaOnce.Do(func() {
 			p, err := kafka.NewProducer(&kafka.ConfigMap{
