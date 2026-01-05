@@ -8,3 +8,5 @@ persistence:
   storageClass: ""
   accessMode: ReadWriteOnce
   size: 300Mi
+matchExpressions:
+  values: khan

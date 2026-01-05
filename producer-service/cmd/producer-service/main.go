@@ -15,6 +15,7 @@ import (
 var (
 	dbConnString       string
 	kafkaConnString    string
+	brokerType         string
 	rabbitMQConnString string
 	kafkaTopic         string
 	rabbitMQQueue      string
@@ -43,6 +44,32 @@ func getAllEnvVariables() {
 	dbConnString = utils.GetEnv("DB_CONN_STR", "")
 	if dbConnString == "" {
 		log.Fatal("DB_CONN_STR is not set")
+	}
+	brokerType = utils.GetEnv("BROKER_TYPE", "")
+	if brokerType == "" {
+		log.Fatal("BROKER_TYPE is not set")
+	}
+	switch brokerType {
+	case "kafka":
+		kafkaConnString = utils.GetEnv("KAFKA_CONN_STR", "")
+		if kafkaConnString == "" {
+			log.Fatal("KAFKA_CONN_STR is not set")
+		}
+		kafkaTopic = utils.GetEnv("KAFKA_TOPIC", "")
+		if kafkaTopic == "" {
+			log.Fatal("KAFKA_TOPIC is not set")
+		}
+	case "rabbitmq":
+		rabbitMQConnString = utils.GetEnv("RABBITMQ_CONN_STR", "")
+		if rabbitMQConnString == "" {
+			log.Fatal("RABBITMQ_CONN_STR is not set")
+		}
+		rabbitMQQueue = utils.GetEnv("RABBITMQ_QUEUE", "")
+		if rabbitMQQueue == "" {
+			log.Fatal("RABBITMQ_QUEUE is not set")
+		}
+	default:
+		log.Fatal("BROKER_TYPE is not set or invalid")
 	}
 
 }

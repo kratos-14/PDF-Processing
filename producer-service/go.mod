@@ -1,6 +1,6 @@
 module github.com/kratos-14/pdf-compressor/producer-service
 
-go 1.23.10
+go 1.23
 
 require (
 	github.com/confluentinc/confluent-kafka-go v1.9.2

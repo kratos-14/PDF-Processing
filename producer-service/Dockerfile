@@ -1,5 +1,5 @@
 # Use an official Go runtime as a parent image
-FROM golang:1.20-bookworm AS build
+FROM golang:1.23-bookworm AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -19,7 +19,7 @@ ENV GOARCH=amd64
 # Build the Go application
 RUN go build -tags musl -tags no_librdkafka_vendor cmd/producer-service/main.go
 
-# Start a new, lightweight imageFROM debian:bullseye-slim
+# Start a new, lightweight image
 FROM debian:bookworm
 
 # Set the working directory for the final image

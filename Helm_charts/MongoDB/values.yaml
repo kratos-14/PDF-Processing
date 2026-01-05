@@ -8,4 +8,6 @@ secret:
   root_password: c3VoYWlsMzQ=
   username: c3VoYWlsMTI=
   password: c3VoYWlsMzQ=
-  users_list: c3VoYWlsMTI= 
+  users_list: c3VoYWlsMTI=
+matchExpressions:
+  values: khan
