@@ -20,6 +20,9 @@ def get_ghostscript_path():
 
 
 def compress_pdf(name, file_ID, power=0):
+    '''
+        Pass filename and file ID of PDF for compression
+    '''
     # Open the PDF file
     quality = {
         0: "/default",

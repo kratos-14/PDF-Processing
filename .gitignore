@@ -4,5 +4,6 @@ env/
 *.pdf
 docs/
 faiss/
+venv/
 
 old-*
