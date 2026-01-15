@@ -1,10 +1,12 @@
 import pika
 from typing import Optional
+from broker.context import Broker
+from pika.adapters.blocking_connection import BlockingChannel
 
 class RabbitMQConnections:
     _instance: Optional["RabbitMQConnections"] = None
     connection: pika.BlockingConnection
-    channel: pika.BlockingChannel
+    channel: BlockingChannel
     
     def __new__(cls) -> "RabbitMQConnections":
         if not cls._instance:
@@ -13,5 +15,17 @@ class RabbitMQConnections:
             cls._instance.channel = cls._instance.connection.channel()
         return cls._instance
     
-    def get_channel(self):
+    def get_channel(self) -> BlockingChannel:
         return self.channel
+
+class RabbitMQBroker(Broker):
+
+    def callback(ch,)
+
+    def __init__(self, connections: RabbitMQConnections):
+        self.consumer = connections.get_channel()
+    
+    def consume(self, topics: list) -> tuple[str, str]:
+        self.consumer.queue_declare(queue=topics[0])
+        self.consumer.basic_publish(properties=pika.BasicProperties(headers=))
+        self.consumer.basic_consume(queue=topics[0], on_message_callback=)
