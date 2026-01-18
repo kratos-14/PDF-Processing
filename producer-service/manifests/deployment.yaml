@@ -32,6 +32,10 @@ spec:
             value: c3VoYWlsMTI=
           - name: MONGO_PASSWORD
             value: c3VoYWlsMzQ=
+          - name: BROKER_TYPE
+            value: rabbitmq
+          - name: RABBITMQ_QUEUE
+            value: my-topic
       restartPolicy: Always
 ---
 

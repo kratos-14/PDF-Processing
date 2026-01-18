@@ -1,17 +1,13 @@
 import logging
 from utils.compress import compress_pdf
-from connections.kafka.kafkaConnections import KafkaConnections, KafkaBroker
-from connections.broker.context import Broker
+from connections.rabbitmq.rabbitmqConnections import RabbitMQBroker, RabbitMQConnections
 
 topics = ['my-topic']
 
 def main():
-    connections = KafkaConnections()
-    broker = KafkaBroker(connections=connections)
-    while True:
-        key, value = broker.consume(topics=topics)                
-        compress_pdf(key ,value)
-
+    connections = RabbitMQConnections()
+    broker = RabbitMQBroker(connections=connections)
+    broker.consume(topics=topics)
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)

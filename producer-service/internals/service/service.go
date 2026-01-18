@@ -14,13 +14,13 @@ type Service interface {
 }
 
 type service struct {
-	repo repo.Repo
+	repo   repo.Repo
 	broker broker.Broker
 }
 
 func New(repo *repo.Repo, broker *broker.Broker) Service {
 	return &service{
-		repo: *repo,
+		repo:   *repo,
 		broker: *broker,
 	}
 }

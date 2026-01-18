@@ -2,6 +2,7 @@ import pika
 from typing import Optional
 from broker.context import Broker
 from pika.adapters.blocking_connection import BlockingChannel
+from utils.compress import compress_pdf
 
 class RabbitMQConnections:
     _instance: Optional["RabbitMQConnections"] = None
@@ -19,13 +20,15 @@ class RabbitMQConnections:
         return self.channel
 
 class RabbitMQBroker(Broker):
-
-    def callback(ch,)
+    def callback(ch, method, properties, body):
+        val = body.decode('utf-8')
+        file = str.split(val, ":")
+        compress_pdf(file_ID=file[0], name=file[1])
 
     def __init__(self, connections: RabbitMQConnections):
         self.consumer = connections.get_channel()
     
     def consume(self, topics: list) -> tuple[str, str]:
         self.consumer.queue_declare(queue=topics[0])
-        self.consumer.basic_publish(properties=pika.BasicProperties(headers=))
-        self.consumer.basic_consume(queue=topics[0], on_message_callback=)
+        self.consumer.basic_consume(queue=topics[0], on_message_callback=callback)
+        self.consumer.start_consuming()
