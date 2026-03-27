@@ -5,7 +5,7 @@ metadata:
   name: producer-service
   namespace: default
   labels:
-    app:  producer-service
+    app: producer-service
 spec:
   selector:
     matchLabels:
@@ -19,19 +19,28 @@ spec:
   template:
     metadata:
       labels:
-        app:  producer-service
+        app: producer-service
     spec:
       containers:
-      - name:  producer-service
-        image:  suhail12/producer-service:latest
-        imagePullPolicy: IfNotPresent
-        ports:
-        - containerPort:  8080
-        env:
-          - name: MONGO_USERNAME
-            value: c3VoYWlsMTI=
-          - name: MONGO_PASSWORD
-            value: c3VoYWlsMzQ=
+        - name: producer-service
+          image: suhail12/producer-service:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: MONGO_USERNAME
+              value: c3VoYWlsMTI=
+            - name: MONGO_PASSWORD
+              value: c3VoYWlsMzQ=
+            - name: BROKER_TYPE
+              value: rabbitmq
+            - name: RABBITMQ_CONN_STR
+              value: amqp://guest:guest@rabbitmq-service.default.svc.cluster.local:5672/
+            - name: RABBITMQ_QUEUE
+              value: my-topic
+            - name: KAFKA_CONN_STR
+              value: kafka-release.default.svc.cluster.local:9092
+            - name: KAFKA_TOPIC
+              value: my-topic
       restartPolicy: Always
 ---
-

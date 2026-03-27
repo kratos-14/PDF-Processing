@@ -1,11 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"mime/multipart"
-
-	"github.com/confluentinc/confluent-kafka-go/kafka"
 )
 
 func (s *service) UploadFile(form *multipart.Form) error {
@@ -17,14 +16,16 @@ func (s *service) UploadFile(form *multipart.Form) error {
 	if err != nil {
 		return fmt.Errorf("error adding files to bucket")
 	}
-	topic := "my-topic"
+	// topic := "my-topic"
 	for key, val := range fileMaps {
-		msg := &kafka.Message{
-			TopicPartition: kafka.TopicPartition{Topic: &topic, Partition: kafka.PartitionAny},
-			Key:            []byte(val),
-			Value:          []byte(key.Hex()),
+		data := map[string]string{
+			val: key.Hex(),
 		}
-		err = s.broker.Produce(*msg)
+		msg, err := json.Marshal(data)
+		if err != nil {
+			return err
+		}
+		err = s.broker.Produce(s.key, msg)
 		if err != nil {
 			log.Printf("error: %v", err)
 		}

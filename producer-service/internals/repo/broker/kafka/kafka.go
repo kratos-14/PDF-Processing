@@ -23,11 +23,12 @@ var (
 	kafkaOnce     sync.Once
 )
 
-func KafkaConnect() *kafka.Producer {
+func KafkaConnect(connStr string) *kafka.Producer {
 	if kafkaProducer == nil {
 		kafkaOnce.Do(func() {
 			p, err := kafka.NewProducer(&kafka.ConfigMap{
-				"bootstraps.servers": "kafka-release.default.svc.cluster.local:9092",
+				// "bootstraps.servers": "kafka-release.default.svc.cluster.local:9092",
+				"bootstraps.servers": connStr,
 			})
 			if err != nil {
 				log.Fatal("failed to create kafka producer: ", err)

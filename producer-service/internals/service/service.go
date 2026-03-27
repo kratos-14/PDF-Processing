@@ -14,13 +14,15 @@ type Service interface {
 }
 
 type service struct {
-	repo repo.Repo
+	key    string
+	repo   repo.Repo
 	broker broker.Broker
 }
 
-func New(repo *repo.Repo, broker *broker.Broker) Service {
+func New(key string, repo *repo.Repo, broker *broker.Broker) Service {
 	return &service{
-		repo: *repo,
+		key:    key,
+		repo:   *repo,
 		broker: *broker,
 	}
 }

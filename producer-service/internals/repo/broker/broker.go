@@ -1,5 +1,5 @@
 package broker
 
 type Broker interface {
-	Produce(interface{}) error
+	Produce(string, []byte) error
 }
