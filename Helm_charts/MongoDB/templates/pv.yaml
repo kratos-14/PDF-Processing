@@ -4,9 +4,9 @@ metadata:
   name: storage-pv
 spec:
   capacity:
-    storage: 1Gi
+    storage: {{ .Values.persistence.size }}
   accessModes:
-    - ReadWriteOnce
+    - {{ .Values.persistence.accessMode }}
   local:
     path: /home
   nodeAffinity:
@@ -16,4 +16,4 @@ spec:
             - key: kubernetes.io/hostname
               operator: In
               values:
-                - khan
+                - {{ .Values.matchExpressions.values }}

@@ -9,4 +9,4 @@ persistence:
   accessMode: ReadWriteOnce
   size: 300Mi
 matchExpressions:
-  values: khan
+  values: kubernetes-control-plane

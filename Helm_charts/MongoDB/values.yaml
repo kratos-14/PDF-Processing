@@ -3,6 +3,9 @@ namespace: default
 container:
   image: mongo
   tag: latest
+persistence:
+  size: 1Gi
+  accessMode: ReadWriteOnce
 secret:
   root_username: c3VoYWlsMTI=
   root_password: c3VoYWlsMzQ=
@@ -10,4 +13,4 @@ secret:
   password: c3VoYWlsMzQ=
   users_list: c3VoYWlsMTI=
 matchExpressions:
-  values: khan
+  values: kubernetes-control-plane

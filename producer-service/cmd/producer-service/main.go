@@ -1,12 +1,14 @@
 package main
 
 import (
-	"fmt"
+	"encoding/base64"
 	"log"
 	"net/http"
 
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/handler"
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo/broker"
+	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo/broker/kafka"
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/repo/broker/rabbitmq"
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/server"
 	"github.com/kratos-14/pdf-compressor/producer-service/internals/service"
@@ -14,7 +16,9 @@ import (
 )
 
 var (
-	dbConnString       string
+	username string
+	password string
+	// dbConnString       string
 	kafkaConnString    string
 	brokerType         string
 	rabbitMQConnString string
@@ -23,13 +27,24 @@ var (
 )
 
 func main() {
-	db, bucket := repo.MongoConnect()
-	connection := rabbitmq.RabbitMQConnect()
-	channel := rabbitmq.CreateChannel(connection)
-	_ = rabbitmq.QueueDeclare(channel, rabbitMQQueue)
+	db, bucket := repo.MongoConnect(username, password)
+	var broker broker.Broker
+	var topic string
+	switch brokerType {
+	case "rabbitmq":
+		topic = rabbitMQQueue
+		conn := rabbitmq.RabbitMQConnect(rabbitMQConnString)
+		producer := rabbitmq.CreateChannel(conn)
+		broker = rabbitmq.New(producer)
+	case "kafka":
+		topic = kafkaTopic
+		producer := kafka.KafkaConnect(kafkaConnString)
+		broker = kafka.New(producer)
+	default:
+		log.Fatalf("Invalid broker type %s specified\n", brokerType)
+	}
 	repo := repo.New(db, bucket)
-	broker := rabbitmq.New(channel)
-	service := service.New(&repo, &broker)
+	service := service.New(topic, &repo, &broker)
 	handler := handler.New(service)
 	mux := server.New(handler)
 	newServer := http.Server{
@@ -44,21 +59,30 @@ func init() {
 }
 
 func getAllEnvVariables() {
+	// usernameBase64 := os.Getenv("MONGO_USERNAME")
+	// passwordBase64 := os.Getenv("MONGO_PASSWORD")
 	usernameBase64 := utils.GetEnv("MONGO_USERNAME", "")
+	if usernameBase64 == "" {
+		log.Fatal("MONGO_USERNAME is not set")
+	}
+	usernameByte, err := base64.StdEncoding.DecodeString(usernameBase64)
+	if err != nil {
+		log.Fatalf("failed decoding MONGO_USERNAME. error: %v\n", err)
+	}
 	passwordBase64 := utils.GetEnv("MONGO_PASSWORD", "")
-	username, err := utils.Base64Decode(usernameBase64)
+	if passwordBase64 == "" {
+		log.Fatal("MONGO_PASSWORD is not set")
+	}
+	passwordByte, err := base64.StdEncoding.DecodeString(passwordBase64)
 	if err != nil {
-		log.Fatalf("failed decoding base64 username. error: %v\n", err)
+		log.Fatalf("failed decoding MONGO_PASSWORD. error: %v\n", err)
 	}
-	password, err := utils.Base64Decode(passwordBase64)
-	if err != nil {
-		log.Fatalf("failed decoding base64 password. error: %v\n", err)
-	}
-	connectionString := fmt.Sprintf("mongodb://%v:%v@mongodb.default.svc.cluster.local:27017/myFiles?authSource=admin&authMechanism=SCRAM-SHA-1", username, password)
-	dbConnString = utils.GetEnv("DB_CONN_STR", connectionString)
-	if dbConnString == "" {
-		log.Fatal("DB_CONN_STR is not set")
-	}
+	username = string(usernameByte)
+	password = string(passwordByte)
+	// dbConnString = utils.GetEnv("DB_CONN_STR", "")
+	// if dbConnString == "" {
+	// 	log.Fatal("DB_CONN_STR is not set")
+	// }
 	brokerType = utils.GetEnv("BROKER_TYPE", "")
 	if brokerType == "" {
 		log.Fatal("BROKER_TYPE is not set")

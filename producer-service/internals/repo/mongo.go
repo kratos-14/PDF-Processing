@@ -2,10 +2,8 @@ package repo
 
 import (
 	"context"
-	"encoding/base64"
 	"fmt"
 	"log"
-	"os"
 	"sync"
 
 	"go.mongodb.org/mongo-driver/mongo"
@@ -16,20 +14,20 @@ import (
 
 var (
 	mongoOnce sync.Once
-	mongoDB *mongo.Database
-	bucket *gridfs.Bucket
+	mongoDB   *mongo.Database
+	bucket    *gridfs.Bucket
 )
 
-func MongoConnect() (*mongo.Database, *gridfs.Bucket) {
+func MongoConnect(username, password string) (*mongo.Database, *gridfs.Bucket) {
 	if mongoDB == nil {
 		mongoOnce.Do(
 			func() {
-				usernameBase64 := os.Getenv("MONGO_USERNAME")
-				passwordBase64 := os.Getenv("MONGO_PASSWORD")
-				usernameByte, _ := base64.StdEncoding.DecodeString(usernameBase64)
-				passwordByte, _ := base64.StdEncoding.DecodeString(passwordBase64)
-				username := string(usernameByte)
-				password := string(passwordByte)
+				// usernameBase64 := os.Getenv("MONGO_USERNAME")
+				// passwordBase64 := os.Getenv("MONGO_PASSWORD")
+				// usernameByte, _ := base64.StdEncoding.DecodeString(usernameBase64)
+				// passwordByte, _ := base64.StdEncoding.DecodeString(passwordBase64)
+				// username := string(usernameByte)
+				// password := string(passwordByte)
 				connectionString := fmt.Sprintf("mongodb://%v:%v@mongodb.default.svc.cluster.local:27017/myFiles?authSource=admin&authMechanism=SCRAM-SHA-1", username, password)
 				clientOptions := options.Client().ApplyURI(connectionString)
 

@@ -23,10 +23,10 @@ var (
 	rabbitMQOnce    sync.Once
 )
 
-func RabbitMQConnect() *amqp.Connection {
+func RabbitMQConnect(connStr string) *amqp.Connection {
 	if rabbitMQConnect == nil {
 		rabbitMQOnce.Do(func() {
-			rc, err := amqp.Dial("")
+			rc, err := amqp.Dial(connStr)
 			if err != nil {
 				log.Fatal("failed to connect to RabbitMQ: ", err)
 			}
@@ -37,7 +37,7 @@ func RabbitMQConnect() *amqp.Connection {
 	return rabbitMQConnect
 }
 
-func CreateChannel(conn *amqp.Connection) (*amqp.Channel) {
+func CreateChannel(conn *amqp.Connection) *amqp.Channel {
 	ch, err := conn.Channel()
 	if err != nil {
 		log.Fatalf("failed creating channel. error: %v", err)

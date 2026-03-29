@@ -9,7 +9,7 @@ form.addEventListener("submit", (e) => {
   for (var i = 0; i < fileInput.files.length; i++) {
     formData.append('files', fileInput.files[i]);
   }
-  fetch('http://192.168.49.2:30001/api/files', {
+  fetch('http://producer-service.default.svc.cluster.local:8080/api/files', {
     method: 'POST',
     body: formData,
   })
@@ -57,7 +57,7 @@ function generateDownloadBtns(fileIdsMap) {
 }
 
 function downloadFile(fileId, fileName) {
-  fetch(`http://192.168.49.2:30001/api/${fileId}`, {
+  fetch(`http://producer-service.default.svc.cluster.local:8080/api/${fileId}`, {
     method: 'GET'
   })
   .then(resp => resp.blob())

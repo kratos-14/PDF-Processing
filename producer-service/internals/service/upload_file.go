@@ -1,11 +1,10 @@
 package service
 
 import (
+	"encoding/json"
 	"fmt"
 	"log"
 	"mime/multipart"
-
-	amqp "github.com/rabbitmq/amqp091-go"
 )
 
 func (s *service) UploadFile(form *multipart.Form) error {
@@ -17,12 +16,16 @@ func (s *service) UploadFile(form *multipart.Form) error {
 	if err != nil {
 		return fmt.Errorf("error adding files to bucket")
 	}
+	// topic := "my-topic"
 	for key, val := range fileMaps {
-		msg := &amqp.Publishing{
-			ContentType: "application/text",
-			Body:        []byte(fmt.Sprintf("%s:%s", key.Hex(), val)),
+		data := map[string]string{
+			val: key.Hex(),
 		}
-		err = s.broker.Produce(*msg)
+		msg, err := json.Marshal(data)
+		if err != nil {
+			return err
+		}
+		err = s.broker.Produce(s.key, msg)
 		if err != nil {
 			log.Printf("error: %v", err)
 		}

@@ -13,9 +13,8 @@ spec:
   # Rook: rook-ceph-block,rook-ceph-fs
   storageClassName: ""
   accessModes:
-  - ReadWriteOnce
+  - {{ .Values.persistence.accessMode }}
   resources:
     requests:
-      storage: 1Gi
+      storage: {{ .Values.persistence.size }}
 ---
-

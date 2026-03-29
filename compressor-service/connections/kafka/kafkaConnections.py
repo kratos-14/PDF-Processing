@@ -1,4 +1,5 @@
 import logging
+import json
 from typing import Optional
 from confluent_kafka import Consumer
 from broker.context import Broker
@@ -48,4 +49,10 @@ class KafkaBroker(Broker):
             logging.basicConfig(level=logging.DEBUG)
             logging.debug("In finally")
             self.consumer.close()
-        return msg.key().decode('utf-8'), msg.value().decode('utf-8')
+        jsonData = json.loads(msg.value().decode('utf-8'))
+        data: tuple[str, str]
+        for key, value in jsonData.items():
+            data = (key, value)
+            logging.info(f'got {key} and {value}')
+
+        return data
