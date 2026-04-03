@@ -2,7 +2,7 @@ import logging
 import json
 from typing import Optional
 from confluent_kafka import Consumer
-from broker.context import Broker
+from connections.broker.context import Broker
 
 class KafkaConnections:
     _instance: Optional["KafkaConnections"] = None

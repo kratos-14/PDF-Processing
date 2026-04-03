@@ -3,9 +3,8 @@ import threading
 import json
 import logging
 from typing import Optional
-from broker.context import Broker
+from connections.broker.context import Broker
 from pika.adapters.blocking_connection import BlockingChannel
-from utils.compress import compress_pdf
 
 class RabbitMQConnections:
     _instance: Optional["RabbitMQConnections"] = None
@@ -17,7 +16,7 @@ class RabbitMQConnections:
             cls._instance = super(RabbitMQConnections, cls).__new__(cls)
             credentials = pika.PlainCredentials('guest', 'guest')
             parameters = pika.ConnectionParameters(
-                host='rabbitmq-0.default.svc.cluster.local',
+                host='rabbitmq-service.default.svc.cluster.local',
                 port='5672',
                 credentials=credentials,
                 heartbeat=60,  # Negotiates a heartbeat timeout in seconds
@@ -31,12 +30,6 @@ class RabbitMQConnections:
         return self.channel
 
 class RabbitMQBroker(Broker):
-<<<<<<< HEAD
-    def callback(ch, method, properties, body):
-        val = body.decode('utf-8')
-        file = str.split(val, ":")
-        compress_pdf(file_ID=file[0], name=file[1])
-=======
     _last_body: str | None = None
     _result_ready = threading.Event()
 
@@ -45,17 +38,11 @@ class RabbitMQBroker(Broker):
         self._result_ready.set()
         # optionally stop after one message
         ch.stop_consuming()
->>>>>>> f71113281b143c67c87134dcf4f65062128961dd
 
     def __init__(self, connections: RabbitMQConnections):
         self.consumer = connections.get_channel()
     
     def consume(self, topics: list) -> tuple[str, str]:
-<<<<<<< HEAD
-        self.consumer.queue_declare(queue=topics[0])
-        self.consumer.basic_consume(queue=topics[0], on_message_callback=callback)
-        self.consumer.start_consuming()
-=======
         queue = topics[0]
         self.consumer.queue_declare(queue=queue, durable=True)
         self._result_ready.clear()
@@ -78,4 +65,3 @@ class RabbitMQBroker(Broker):
             data = (key, value)
             logging.info(f'got {key} and {value}')
         return data
->>>>>>> f71113281b143c67c87134dcf4f65062128961dd

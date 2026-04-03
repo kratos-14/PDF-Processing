@@ -5,7 +5,6 @@ import (
 )
 
 func (h *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
-	w.Write([]byte("Upload file"))
 	err := r.ParseMultipartForm(2048)
 	if err != nil {
 		http.Error(w, "Failed to parse multipart form: "+err.Error(), http.StatusBadRequest)
@@ -16,4 +15,5 @@ func (h *Handler) UploadFile(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Failed to upload file: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+	w.Write([]byte("File Uploaded Successfully"))
 }

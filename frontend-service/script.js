@@ -9,19 +9,19 @@ form.addEventListener("submit", (e) => {
   for (var i = 0; i < fileInput.files.length; i++) {
     formData.append('files', fileInput.files[i]);
   }
-  fetch('http://producer-service.default.svc.cluster.local:8080/api/files', {
+  fetch('/api/files', {
     method: 'POST',
     body: formData,
   })
-  .then(resp => resp.json())
-  .then(data => {
-    console.log('Success: ', data);
-    generateDownloadBtns(data['resp'])
-    generateDownloadAllBtn(data['resp'])
-  })
-  .catch((error) => {
-    console.error('Error: ', error);
-  })
+    .then(resp => resp.json())
+    .then(data => {
+      console.log('Success: ', data);
+      generateDownloadBtns(data['resp'])
+      generateDownloadAllBtn(data['resp'])
+    })
+    .catch((error) => {
+      console.error('Error: ', error);
+    })
   console.log(files);
 })
 
@@ -57,18 +57,18 @@ function generateDownloadBtns(fileIdsMap) {
 }
 
 function downloadFile(fileId, fileName) {
-  fetch(`http://producer-service.default.svc.cluster.local:8080/api/${fileId}`, {
+  fetch(`/api/${fileId}`, {
     method: 'GET'
   })
-  .then(resp => resp.blob())
-  .then(blob => {
-    var link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
-    link.download = fileName
-    link.target = '_blank'
-    link.click()
-  })
-  .catch(error => {
-    console.error('Error Downloading file : ', error)
-  });
+    .then(resp => resp.blob())
+    .then(blob => {
+      var link = document.createElement('a');
+      link.href = URL.createObjectURL(blob);
+      link.download = fileName
+      link.target = '_blank'
+      link.click()
+    })
+    .catch(error => {
+      console.error('Error Downloading file : ', error)
+    });
 }
